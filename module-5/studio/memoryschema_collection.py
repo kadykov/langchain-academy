@@ -1,4 +1,4 @@
-import uuid 
+import uuid
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +13,7 @@ from langgraph.store.base import BaseStore
 import configuration
 
 # Initialize the LLM
-model = ChatOpenAI(model="gpt-4o", temperature=0) 
+model = ChatOpenAI(model="gpt-4o", temperature=0)
 
 # Memory schema
 class Memory(BaseModel):
@@ -29,24 +29,24 @@ trustcall_extractor = create_extractor(
 )
 
 # Chatbot instruction
-MODEL_SYSTEM_MESSAGE = """You are a helpful chatbot. You are designed to be a companion to a user. 
+MODEL_SYSTEM_MESSAGE = """You are a helpful chatbot. You are designed to be a companion to a user.
 
 You have a long term memory which keeps track of information you learn about the user over time.
 
-Current Memory (may include updated memories from this conversation): 
+Current Memory (may include updated memories from this conversation):
 
 {memory}"""
 
 # Trustcall instruction
-TRUSTCALL_INSTRUCTION = """Reflect on following interaction. 
+TRUSTCALL_INSTRUCTION = """Reflect on following interaction.
 
-Use the provided tools to retain any necessary memories about the user. 
+Use the provided tools to retain any necessary memories about the user.
 
 Use parallel tool calling to handle updates and insertions simultaneously:"""
 def call_model(state: MessagesState, config: RunnableConfig, store: BaseStore):
 
     """Load memory from the store and use it to personalize the chatbot's response."""
-    
+
     # Get configuration
     configurable = configuration.Configuration.from_runnable_config(config)
 
@@ -69,7 +69,7 @@ def call_model(state: MessagesState, config: RunnableConfig, store: BaseStore):
 def write_memory(state: MessagesState, config: RunnableConfig, store: BaseStore):
 
     """Reflect on the chat history and save a memory to the store."""
-    
+
     # Get configuration
     configurable = configuration.Configuration.from_runnable_config(config)
 
@@ -94,7 +94,7 @@ def write_memory(state: MessagesState, config: RunnableConfig, store: BaseStore)
     updated_messages=list(merge_message_runs(messages=[SystemMessage(content=TRUSTCALL_INSTRUCTION)] + state["messages"]))
 
     # Invoke the extractor
-    result = trustcall_extractor.invoke({"messages": updated_messages, 
+    result = trustcall_extractor.invoke({"messages": updated_messages,
                                         "existing": existing_memories})
 
     # Save the memories from Trustcall to the store

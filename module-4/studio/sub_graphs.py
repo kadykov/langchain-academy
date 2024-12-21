@@ -85,7 +85,7 @@ class EntryGraphState(TypedDict):
 def clean_logs(state):
     # Get logs
     raw_logs = state["raw_logs"]
-    # Data cleaning raw_logs -> docs 
+    # Data cleaning raw_logs -> docs
     cleaned_logs = raw_logs
     return {"cleaned_logs": cleaned_logs}
 

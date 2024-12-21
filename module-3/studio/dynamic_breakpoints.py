@@ -13,7 +13,7 @@ def step_2(state: State) -> State:
     # Let's optionally raise a NodeInterrupt if the length of the input is longer than 5 characters
     if len(state['input']) > 5:
         raise NodeInterrupt(f"Received input that is longer than 5 characters: {state['input']}")
-    
+
     print("---Step 2---")
     return state
 

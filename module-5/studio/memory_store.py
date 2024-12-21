@@ -6,10 +6,10 @@ from langgraph.store.base import BaseStore
 import configuration
 
 # Initialize the LLM
-model = ChatOpenAI(model="gpt-4o", temperature=0) 
+model = ChatOpenAI(model="gpt-4o", temperature=0)
 
 # Chatbot instruction
-MODEL_SYSTEM_MESSAGE = """You are a helpful assistant with memory that provides information about the user. 
+MODEL_SYSTEM_MESSAGE = """You are a helpful assistant with memory that provides information about the user.
 If you have memory for this user, use it to personalize your responses.
 Here is the memory (it may be empty): {memory}"""
 
@@ -38,7 +38,7 @@ Based on the chat history below, please update the user information:"""
 def call_model(state: MessagesState, config: RunnableConfig, store: BaseStore):
 
     """Load memory from the store and use it to personalize the chatbot's response."""
-    
+
     # Get configuration
     configurable = configuration.Configuration.from_runnable_config(config)
 
@@ -68,7 +68,7 @@ def call_model(state: MessagesState, config: RunnableConfig, store: BaseStore):
 def write_memory(state: MessagesState, config: RunnableConfig, store: BaseStore):
 
     """Reflect on the chat history and save a memory to the store."""
-    
+
     # Get configuration
     configurable = configuration.Configuration.from_runnable_config(config)
 
@@ -85,12 +85,12 @@ def write_memory(state: MessagesState, config: RunnableConfig, store: BaseStore)
         existing_memory_content = existing_memory.value.get('memory')
     else:
         existing_memory_content = "No existing memory found."
-        
+
     # Format the memory in the system prompt
     system_msg = CREATE_MEMORY_INSTRUCTION.format(memory=existing_memory_content)
     new_memory = model.invoke([SystemMessage(content=system_msg)]+state['messages'])
 
-    # Overwrite the existing memory in the store 
+    # Overwrite the existing memory in the store
     key = "user_memory"
     store.put(namespace, key, {"memory": new_memory.content})
 
